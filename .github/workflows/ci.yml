@@ -35,7 +35,7 @@ jobs:
       - name: Run hello_world
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            ./hello_world_application/build/Release/hello_world.exe || ./hello_world_application/build/hello_world.exe
+            ./hello_world_application/build/Debug/hello_world.exe
           else
             ./hello_world_application/build/hello_world
           fi
@@ -44,7 +44,7 @@ jobs:
       - name: Run solver
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            ./solver_application/build/Release/solver.exe || ./solver_application/build/solver.exe
+            ./solver_application/build/Debug/solver.exe
           else
             ./solver_application/build/solver
           fi
