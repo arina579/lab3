@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        compiler: [g++, clang++]
+        exclude:
+          - os: windows-latest
+            compiler: clang++
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} (${{ matrix.compiler }})
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install clang (Linux only)
+        if: runner.os == 'Linux' && matrix.compiler == 'clang++'
+        run: sudo apt-get update && sudo apt-get install -y clang
+      
+      - name: Build all
+        run: |
+          cd formatter_lib && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
+          cd formatter_ex_lib && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
+          cd solver_lib && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
+          cd hello_world_application && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
+          cd solver_application && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
+      
+      - name: Run hello_world
+        run: ./hello_world_application/build/hello_world
+      
+      - name: Run solver
+        run: ./solver_application/build/solver
