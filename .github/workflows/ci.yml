@@ -25,27 +25,23 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y clang
       
       - name: Build all
-        run: |
-          cd formatter_lib && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
-          cd formatter_ex_lib && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
-          cd solver_lib && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
-          cd hello_world_application && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
-          cd solver_application && cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build && cd ..
+        run: cmake -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} && cmake --build build
       
       - name: Run hello_world
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            ./hello_world_application/build/Debug/hello_world.exe
+            ./build/hello_world_application/Debug/hello_world.exe
           else
-            ./hello_world_application/build/hello_world
+            ./build/hello_world_application/hello_world
           fi
         shell: bash
       
       - name: Run solver
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
-            ./solver_application/build/Debug/solver.exe
+            echo "1 -5 6" | ./build/solver_application/Debug/solver.exe
           else
-            ./solver_application/build/solver
+            echo "1 -5 6" | ./build/solver_application/solver
           fi
         shell: bash
+
